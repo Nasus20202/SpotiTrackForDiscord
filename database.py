@@ -16,6 +16,8 @@ def create_connection():
 def new_song(song_id, plays = 0, db = create_connection()):
     if(check_if_exists(song_id, db)):
         return
+    if(song_id == None):
+        return
     sql = ''' INSERT INTO songs(id,plays)VALUES(?,?) '''
     try:
         cur = db.cursor()
@@ -28,7 +30,7 @@ def new_song(song_id, plays = 0, db = create_connection()):
 def get_song_plays(song_id, db = create_connection()):
     if(not check_if_exists(song_id, db)):
         return 0
-    sql = ' SELECT plays FROM songs WHERE id = "' + song_id + '" '
+    sql = ' SELECT plays FROM songs WHERE id = "' + str(song_id) + '" '
     try:
         cur = db.cursor()
         cur.execute(sql)
@@ -40,7 +42,9 @@ def update_song(song_id, plays = 0, db = create_connection()):
     if(not check_if_exists(song_id, db)):
         new_song(song_id, plays, db)
         return
-    sql = ' UPDATE songs SET plays = "' + str(plays) + '" WHERE id = "' + song_id + '" '
+    if(song_id == None):
+        return
+    sql = ' UPDATE songs SET plays = "' + str(plays) + '" WHERE id = "' + str(song_id) + '" '
     try:
         cur = db.cursor()
         cur.execute(sql)
@@ -62,7 +66,9 @@ def create_tables(db = create_connection()):
         print(e)
 
 def check_if_exists(song_id, db = create_connection()):
-    sql = 'SELECT EXISTS(SELECT 1 FROM songs WHERE id="' + song_id + '");'
+    if(song_id == None):
+        return False
+    sql = 'SELECT EXISTS(SELECT 1 FROM songs WHERE id="' + str(song_id) + '");'
     try:
         c = db.cursor()
         c.execute(sql)
@@ -74,7 +80,7 @@ def check_if_exists(song_id, db = create_connection()):
         print(e)
 
 def get_top_song(count = 10, db = create_connection()):
-    sql = 'SELECT * FROM songs ORDER BY plays DESC LIMIT ' + str(count)
+    sql = 'SELECT * FROM songs WHERE NOT id = "time_spent" ORDER BY plays DESC LIMIT ' + str(count)
     try:
         cur = db.cursor()
         cur.execute(sql)

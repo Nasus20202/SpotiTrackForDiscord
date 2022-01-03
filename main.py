@@ -5,6 +5,8 @@ import sys
 import asyncio
 import nest_asyncio
 import database
+import discord_bio
+import time_manager
 
 
 def handler(signum, frame):
@@ -27,15 +29,29 @@ async def checkIfSongIsOver(id):
         id = ""
     if(duration - progress <= 5000 and current_id != id):
         database.new_record(spotify.get_track_id(), db)
+        time_manager.add_millis(duration)
+        discord_bio.set(generate_bio())
         await asyncio.sleep(1)
         return current_id
     await asyncio.sleep(1)
     return id
 
 
+
+def generate_bio():
+    bio = "Time spent listening: " + time_manager.get_current_time_spent() + " (d/h/m/s)\\n"
+    songs = database.get_top_song(5)
+    i = 1
+    for song in songs:
+        name = spotify.get_track_name_by_id(song[0])
+        plays = song[1]
+        bio += '#' + str(i) + " " + name + ' (' + str(plays) + ')\\n'
+        i += 1
+    return bio
+
 async def thread():
     i = 0
-    id = ""
+    id = spotify.get_track_id()
     while True:
         id = await checkIfSongIsOver(id)
         if(i == 1000):
