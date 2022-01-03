@@ -121,4 +121,29 @@ def get_track_name_by_id(id):
     except:
         print("Cannot get data from Spotify API")
         return ""
+    if(response.status_code != 200):
+        return ""
     return response.json()["name"]
+
+def get_track_artist(id):
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization':  "Bearer " + os.environ["SPOTIFY"]
+    }
+    try:
+        response = requests.get('https://api.spotify.com/v1/tracks/'+id, headers=headers)
+    except:
+        print("Cannot get data from Spotify API")
+        return ""
+    if(response.status_code != 200):
+        return ""
+    data = response.json()
+    artists = ""
+    first = True
+    for artist in data["artists"]:
+        if(not first):
+            artists += ', '
+        first = False
+        artists += artist["name"]
+    return artists
