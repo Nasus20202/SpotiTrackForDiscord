@@ -22,12 +22,12 @@ nest_asyncio.apply()
 db = database.create_connection()
 
 async def checkIfSongIsOver(id):
+    current_id = spotify.get_track_id()
     progress = spotify.get_milliseconds()
     duration = spotify.get_duration_milliseconds()
-    current_id = spotify.get_track_id()
-    if(progress <= 5000):
+    if(progress <= 7500):
         id = ""
-    if(duration - progress <= 5000 and current_id != id):
+    if(duration - progress <= 7500 and current_id != id):
         database.new_record(spotify.get_track_id(), db)
         time_manager.add_millis(duration)
         discord_bio.set(generate_bio())
