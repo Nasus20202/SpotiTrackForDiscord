@@ -90,13 +90,13 @@ def get_duration_milliseconds():
 def get_progress():
     data = get_current_spotify_info()
     if(data[0]!=200):
-        return
+        return 0
     return __milis_to_time__(data[1]["progress_ms"])
 
 def get_duration():
     data = get_current_spotify_info()
     if(data[0]!=200):
-        return
+        return 10000
     return __milis_to_time__(data[1]["item"]["duration_ms"])
     
 
