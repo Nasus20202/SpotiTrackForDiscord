@@ -26,7 +26,7 @@ def stats(n):
         bio += f"#{i} {artists} {artistsPopularity[artists]}\n"
         i+=1
     sleep(0.05) # just for API rate limit
-    bio += f'Total plays: {totalPlays} - time spent: {time_manager.get_current_time_spent()}'
+    bio += f'Total plays: {totalPlays}'
     return bio
 
 print(stats(int(input("How many songs would you like to see? "))))
