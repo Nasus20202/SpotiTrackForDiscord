@@ -24,7 +24,9 @@ def add_minutes(minutes):
     add_seconds(60 * minutes)
 
 def get_current_time_spent():
-    seconds = get_current_raw_time_spent()
+    return format_time(get_current_raw_time_spent())
+
+def format_time(seconds):
     days = seconds // (24 * 3600)
     seconds -= days * 24 * 3600
     hours = seconds // 3600
@@ -32,6 +34,5 @@ def get_current_time_spent():
     minutes = seconds // 60
     seconds -= minutes * 60
     return str(days) + ":" + f"{hours:02d}" + ":" + f"{minutes:02d}" + ":" + f"{seconds:02d}"
-
 
 
