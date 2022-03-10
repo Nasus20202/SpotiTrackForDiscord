@@ -8,6 +8,7 @@ def stats(n):
     songs = database.get_top_song(n)
     i = 1
     totalPlays = 0
+    totalTime = 0
     artistsPopularity = {}
     artistsTime = {}
     for song in songs:
@@ -25,10 +26,11 @@ def stats(n):
                 artistsTime[artist] = 0
             artistsTime[artist] += time_spent_on_song
         totalPlays += plays
+        totalTime += time_spent_on_song
     bio += f"\nArtist's tracks play count and time in your top {n} tracks:\n"
     i = 1
     for artists in dict(sorted(artistsPopularity.items(), key=lambda item: item[1], reverse=True)):
-        bio += f"#{i} - {artists} {artistsPopularity[artists]} - {time_manager.format_time(artistsTime[artists])}\n"
+        bio += f"#{i} - {artists} {artistsPopularity[artists]} - {time_manager.format_time(artistsTime[artists])} - {round((artistsTime[artists]/totalTime)*100, 1)}%\n"
         i+=1
     sleep(0.05) # just for API rate limit
     bio += f'Total plays: {totalPlays}'
