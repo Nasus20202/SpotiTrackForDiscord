@@ -16,6 +16,7 @@ def handler(signum, frame):
  
 signal.signal(signal.SIGINT, handler)
 
+old_time = time_manager.get_current_raw_time_spent()
 load_dotenv()
 nest_asyncio.apply()
 
@@ -25,12 +26,16 @@ async def checkIfSongIsOver(id):
     current_id = spotify.get_track_id()
     progress = spotify.get_milliseconds()
     duration = spotify.get_duration_milliseconds()
+    global old_time
     if(progress <= 7500):
         id = ""
     if(duration - progress <= 7500 and current_id != id):
         database.new_record(spotify.get_track_id(), db)
         time_manager.add_millis(duration)
-        discord_bio.set(generate_bio())
+        new_time = time_manager.get_current_raw_time_spent()
+        if(new_time != old_time):
+            discord_bio.set(generate_bio())
+            old_time  = new_time
         await asyncio.sleep(1)
         return current_id
     await asyncio.sleep(1)
