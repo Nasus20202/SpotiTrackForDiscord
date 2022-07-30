@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def refresh_access_token():
+async def refresh_access_token():
     refresh_token = os.environ["SPOTIFY_REFRESH_TOKEN"]
     params = (
         ('refresh_token', refresh_token),
@@ -18,10 +18,18 @@ def refresh_access_token():
         print("New token generated")
     except:
         print("Cannot refresh the token!")
-        asyncio.sleep(1)
+        await asyncio.sleep(1)
         refresh_access_token()
 
-refresh_access_token()
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
+task = loop.create_task(refresh_access_token())
+try:
+    loop.run_until_complete(task)
+except asyncio.CancelledError:
+    pass
+
+
 
 def __milis_to_time__(miliseconds):
     minutes = miliseconds // 60000
@@ -45,8 +53,7 @@ def get_current_spotify_info():
         return [response.status_code, {}]
     return [response.status_code, response.json()]
 
-def get_current_artists():
-    data = get_current_spotify_info()
+def get_current_artists(data = get_current_spotify_info()):
     if(data[0]!=200):
         return
     artists = ""
@@ -58,14 +65,12 @@ def get_current_artists():
         artists = artists + artist["name"]
     return artists
 
-def get_current_track():
-    data = get_current_spotify_info()
+def get_current_track(data = get_current_spotify_info()):
     if(data[0]!=200):
         return
     return data[1]["item"]["name"]
 
-def get_album_covers():
-    data = get_current_spotify_info()
+def get_album_covers(data = get_current_spotify_info()):
     if(data[0]!=200):
         return
     images = []
@@ -73,39 +78,33 @@ def get_album_covers():
         images.append(image["url"])
     return images
 
-def get_milliseconds():
-    data = get_current_spotify_info()
+def get_milliseconds(data = get_current_spotify_info()):
     if(data[0]!=200):
         return 0
     else:
         return data[1]["progress_ms"]
 
-def get_duration_milliseconds():
-    data = get_current_spotify_info()
+def get_duration_milliseconds(data = get_current_spotify_info()):
     if(data[0]!=200):
         return 0
     else:
         return data[1]["item"]["duration_ms"]
 
-def get_progress():
-    data = get_current_spotify_info()
+def get_progress(data = get_current_spotify_info()):
     if(data[0]!=200):
         return 0
     return __milis_to_time__(data[1]["progress_ms"])
 
-def get_duration():
-    data = get_current_spotify_info()
+def get_duration(data = get_current_spotify_info()):
     if(data[0]!=200):
         return 10000
     return __milis_to_time__(data[1]["item"]["duration_ms"])
     
 
-def get_response_code():
-    data = get_current_spotify_info()
+def get_response_code(data = get_current_spotify_info()):
     return data[0]
 
-def get_track_id():
-    data = get_current_spotify_info()
+def get_track_id(data = get_current_spotify_info()):
     if(data[0]!=200):
         return
     return data[1]["item"]["id"]
@@ -117,7 +116,7 @@ def get_track_name_by_id(id):
         'Authorization':  "Bearer " + os.environ["SPOTIFY"]
     }
     try:
-        response = requests.get('https://api.spotify.com/v1/tracks/'+id, headers=headers, timeout=3)
+        response = requests.get('https://api.spotify.com/v1/tracks/'+id, headers=headers, timeout=5)
     except:
         print("Cannot get data from Spotify API")
         return ""
@@ -132,7 +131,7 @@ def get_track_artist(id):
         'Authorization':  "Bearer " + os.environ["SPOTIFY"]
     }
     try:
-        response = requests.get('https://api.spotify.com/v1/tracks/'+id, headers=headers, timeout=3)
+        response = requests.get('https://api.spotify.com/v1/tracks/'+id, headers=headers, timeout=5)
     except:
         print("Cannot get data from Spotify API")
         return ""
@@ -155,7 +154,7 @@ def get_track_duration(id):
         'Authorization':  "Bearer " + os.environ["SPOTIFY"]
     }
     try:
-        response = requests.get('https://api.spotify.com/v1/tracks/'+id, headers=headers, timeout=3)
+        response = requests.get('https://api.spotify.com/v1/tracks/'+id, headers=headers, timeout=5)
     except:
         print("Cannot get data from Spotify API")
         return ""

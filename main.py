@@ -23,9 +23,11 @@ nest_asyncio.apply()
 db = database.create_connection()
 
 async def checkIfSongIsOver(id):
-    current_id = spotify.get_track_id()
-    progress = spotify.get_milliseconds()
-    duration = spotify.get_duration_milliseconds()
+    sleep_time = 3
+    data = spotify.get_current_spotify_info();
+    current_id = spotify.get_track_id(data)
+    progress = spotify.get_milliseconds(data)
+    duration = spotify.get_duration_milliseconds(data)
     global old_time
     if(progress <= 7500):
         id = ""
@@ -36,9 +38,9 @@ async def checkIfSongIsOver(id):
         if(new_time != old_time):
             discord_bio.set(generate_bio())
             old_time  = new_time
-        await asyncio.sleep(1)
+        await asyncio.sleep(sleep_time)
         return current_id
-    await asyncio.sleep(1)
+    await asyncio.sleep(sleep_time)
     return id
 
 
@@ -60,7 +62,7 @@ async def thread():
     while True:
         id = await checkIfSongIsOver(id)
         if(i == 1000):
-            spotify.refresh_access_token()
+            await spotify.refresh_access_token()
             i = 0
         i = i + 1
 
