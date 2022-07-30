@@ -19,7 +19,7 @@ async def refresh_access_token():
     except:
         print("Cannot refresh the token!")
         await asyncio.sleep(1)
-        refresh_access_token()
+        await refresh_access_token()
 
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
