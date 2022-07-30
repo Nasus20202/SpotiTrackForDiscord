@@ -61,7 +61,7 @@ async def thread():
     id = spotify.get_track_id()
     while True:
         id = await checkIfSongIsOver(id)
-        if(i == 1000):
+        if(i == 200):
             await spotify.refresh_access_token()
             i = 0
         i = i + 1
