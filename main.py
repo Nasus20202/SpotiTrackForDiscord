@@ -32,7 +32,7 @@ async def checkIfSongIsOver(id):
     if(progress <= 7500):
         id = ""
     if(duration - progress <= 7500 and current_id != id):
-        database.new_record(spotify.get_track_id(), db)
+        database.new_record(current_id, db)
         time_manager.add_millis(duration)
         new_time = time_manager.get_current_raw_time_spent()
         if(new_time != old_time):
