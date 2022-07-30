@@ -13,7 +13,7 @@ def refresh_access_token():
         ('refresh_token', refresh_token),
     )
     try:
-        response = requests.get(os.environ["TOKEN_GENERATOR_SERVER"] + '?refresh_token=' + refresh_token)
+        response = requests.get(os.environ["TOKEN_GENERATOR_SERVER"] + '?refresh_token=' + refresh_token, timeout=3)
         os.environ["SPOTIFY"] = response.json()["access_token"]
         print("New token generated")
     except:
@@ -37,7 +37,7 @@ def __milis_to_time__(miliseconds):
 
 def get_current_spotify_info():
     try:
-        response = requests.get("https://api.spotify.com/v1/me/player/currently-playing?market=PL", headers= {"Authorization" : "Bearer " + os.environ["SPOTIFY"]})
+        response = requests.get("https://api.spotify.com/v1/me/player/currently-playing?market=PL", headers= {"Authorization" : "Bearer " + os.environ["SPOTIFY"]}, timeout=3)
     except:
         print("Cannot get data from Spotify API")
         return [404]
@@ -117,7 +117,7 @@ def get_track_name_by_id(id):
         'Authorization':  "Bearer " + os.environ["SPOTIFY"]
     }
     try:
-        response = requests.get('https://api.spotify.com/v1/tracks/'+id, headers=headers)
+        response = requests.get('https://api.spotify.com/v1/tracks/'+id, headers=headers, timeout=3)
     except:
         print("Cannot get data from Spotify API")
         return ""
@@ -132,7 +132,7 @@ def get_track_artist(id):
         'Authorization':  "Bearer " + os.environ["SPOTIFY"]
     }
     try:
-        response = requests.get('https://api.spotify.com/v1/tracks/'+id, headers=headers)
+        response = requests.get('https://api.spotify.com/v1/tracks/'+id, headers=headers, timeout=3)
     except:
         print("Cannot get data from Spotify API")
         return ""
@@ -155,7 +155,7 @@ def get_track_duration(id):
         'Authorization':  "Bearer " + os.environ["SPOTIFY"]
     }
     try:
-        response = requests.get('https://api.spotify.com/v1/tracks/'+id, headers=headers)
+        response = requests.get('https://api.spotify.com/v1/tracks/'+id, headers=headers, timeout=3)
     except:
         print("Cannot get data from Spotify API")
         return ""
