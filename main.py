@@ -46,7 +46,7 @@ async def checkIfSongIsOver(id):
 
 
 def generate_bio():
-    bio = "Time spent listening: **" + time_manager.get_current_time_spent() + "** (d:h:m\\\:s)\\n"
+    bio = "Time spent listening: **" + time_manager.get_current_time_spent() + "** (" + database.get_stream_count() +")\\n"
     songs = database.get_top_song(5)
     i = 1
     for song in songs:

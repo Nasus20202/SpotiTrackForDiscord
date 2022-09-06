@@ -88,6 +88,16 @@ def get_top_song(count = 10, db = create_connection()):
     except Error as e:
         print(e)
 
+def get_stream_count(db = create_connection()):
+    sql = 'SELECT SUM(plays) FROM songs WHERE NOT id = "time_spent"'
+    try:
+        cur = db.cursor()
+        cur.execute(sql)
+        return cur.fetchall()[0][0]
+    except Error as e:
+        print(e)
+        return 0
+
 
 def new_record(song_id, db = create_connection()):
     update_song(song_id, get_song_plays(song_id, db) + 1, db)
